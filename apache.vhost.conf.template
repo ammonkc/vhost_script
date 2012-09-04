@@ -1,0 +1,48 @@
+#----------------------------------------
+# VirtualHost @@HOSTNAME@@
+#----------------------------------------
+
+# NameVirtualHost
+#NameVirtualHost *:80
+
+<VirtualHost *:80>
+    ServerAdmin acasey@panda-group.com
+    ServerName @@HOSTNAME@@
+    #ServerAlias www.@@HOSTNAME@@
+    DocumentRoot /var/www/html/@@HOSTNAME@@/@@ENVIRONMENT@@/@@WEBROOT@@
+
+    # ————— Browser Caching —————————–
+    Include conf/custom/cache.conf
+
+    # ————— GZIP Compression —————————
+    Include conf/custom/gzip.conf
+
+    # ----- IE -----------------------
+    Include conf/custom/ie.conf
+
+    # ----- Web Fonts ----------------
+    Include conf/custom/webfont.conf
+
+    # ----- MIME Types ---------------
+    Include conf/custom/mime-type.conf
+
+    # ----- CharSet ------------------
+    Include conf/custom/charset.conf
+
+    # ----- Security -----------------
+    Include conf/custom/security.conf
+
+    # ----- Whitelist ----------------
+    #Include conf/custom/whitelist/@@HOSTNAME@@.conf
+
+    ErrorLog logs/@@HOSTNAME@@-error.log
+    CustomLog logs/@@HOSTNAME@@-access.log common
+    LogLevel warn
+
+    <Directory /var/www/html/@@HOSTNAME@@/@@ENVIRONMENT@@/public>
+      Options -Indexes -Includes -FollowSymLinks SymLinksifOwnerMatch ExecCGI MultiViews
+      AllowOverride All
+      Order allow,deny
+      Allow from all
+   </Directory>
+</VirtualHost>

@@ -14,35 +14,35 @@ SED=`which sed`
 CURRENT_DIR=`dirname $0`
 
 if [ -z $1 ]; then
-	echo "No domain name given"
-	exit 1
+    echo "No domain name given"
+    exit 1
 fi
 DOMAIN=$1
 
 # check the domain is valid!
 PATTERN="^(([a-zA-Z]|[a-zA-Z][-a-zA-Z0-9]*[a-zA-Z0-9])\.)+([A-Za-z]|[A-Za-z][-A-Za-z0-9]*[A-Za-z0-9])$";
 if [[ "$DOMAIN" =~ $PATTERN ]]; then
-	DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
-	echo "Creating hosting for:" $DOMAIN
+    DOMAIN=`echo $DOMAIN | tr '[A-Z]' '[a-z]'`
+    echo "Creating hosting for:" $DOMAIN
 else
-	echo "invalid domain name"
-	exit 1
+    echo "invalid domain name"
+    exit 1
 fi
 
 # set environment defaults to production
 read -e -p "Environment (production)? " ENV
 if [ -z $ENV ]; then
-	ENVIRONMENT='production'
+    ENVIRONMENT='production'
 else
-	ENVIRONMENT=$ENV
+    ENVIRONMENT=$ENV
 fi
 
 # Change web root directory
 read -e -p "Web root directory (public)? " CHROOTDIR
 if [ -z $CHROOTDIR ]; then
-	WEB_ROOT='public'
+    WEB_ROOT='public'
 else
-	WEB_ROOT=$CHROOTDIR
+    WEB_ROOT=$CHROOTDIR
 fi
 
 # Now we need to copy the virtual host template
@@ -57,14 +57,16 @@ chmod 600 $CONFIG
 ln -s $CONFIG $VHOSTS_ENABLED/$DOMAIN.conf
 
 # set file perms and create required dirs!
-mkdir -p /var/www/html/$DOMAIN/$ENVIRONMENT/$WEB_ROOT
-mkdir /var/www/html/$DOMAIN/$ENVIRONMENT/_logs
-chmod g+rx /var/www/html/$DOMAIN/$ENVIRONMENT
-chmod 755 /var/www/html/$DOMAIN/$ENVIRONMENT -R
-chmod 770 /var/www/html/$DOMAIN/$ENVIRONMENT/_logs
-chmod 755 /var/www/html/$DOMAIN/$ENVIRONMENT/$WEB_ROOT
-chmod g+s /var/www/html/$DOMAIN/$ENVIRONMENT/$WEB_ROOT
-chown root:develop /var/www/html/$DOMAIN/$ENVIRONMENT/ -R
+if [ ! -d "/var/www/html/$DOMAIN/$ENVIRONMENT" ]; then
+    mkdir -p /var/www/html/$DOMAIN/$ENVIRONMENT/$WEB_ROOT
+    mkdir /var/www/html/$DOMAIN/$ENVIRONMENT/_logs
+    chmod 755 /var/www/html/$DOMAIN/$ENVIRONMENT -R
+    chmod g+rwx /var/www/html/$DOMAIN/$ENVIRONMENT
+    chmod 770 /var/www/html/$DOMAIN/$ENVIRONMENT/_logs
+    chmod 755 /var/www/html/$DOMAIN/$ENVIRONMENT/$WEB_ROOT
+    chmod g+ws /var/www/html/$DOMAIN/$ENVIRONMENT/$WEB_ROOT
+    chown root:develop /var/www/html/$DOMAIN/$ENVIRONMENT/ -R
+fi
 
 while true; do
     read -p "Restart Apache now (y/n)? " RELOAD
@@ -85,4 +87,5 @@ while true; do
 done
 
 echo -e "\nSite Created for $DOMAIN with PHP support"
+
 

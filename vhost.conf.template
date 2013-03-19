@@ -6,7 +6,7 @@
 #NameVirtualHost *:80
 
 <VirtualHost *:80>
-    ServerAdmin acasey@panda-group.com
+    ServerAdmin @@ADMIN@@
     ServerName @@HOSTNAME@@
     #ServerAlias www.@@HOSTNAME@@
     DocumentRoot /var/www/html/@@HOSTNAME@@/@@ENVIRONMENT@@/@@WEBROOT@@
@@ -46,3 +46,4 @@
       Allow from all
    </Directory>
 </VirtualHost>
+

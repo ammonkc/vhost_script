@@ -7,6 +7,7 @@
 VHOST_CONFIG='/etc/httpd/conf/vhosts/available'
 VHOSTS_ENABLED='/etc/httpd/conf/vhosts/enabled'
 VHOST_TEMPLATE='/etc/httpd/conf/vhosts/template'
+ADMIN='admin@email.com'
 HTTPD_INIT='/etc/init.d/httpd'
 PHP_FPM_INIT='/etc/init.d/php-fpm'
 # --------------END
@@ -47,10 +48,11 @@ fi
 
 # Now we need to copy the virtual host template
 CONFIG=$VHOST_CONFIG/$DOMAIN.conf
-cp $VHOST_TEMPLATE/apache.vhost.conf.template $CONFIG
+cp $VHOST_TEMPLATE/vhost.conf.template $CONFIG
 $SED -i "s/@@HOSTNAME@@/$DOMAIN/g" $CONFIG
 $SED -i "s/@@ENVIRONMENT@@/$ENVIRONMENT/g" $CONFIG
 $SED -i "s/@@WEBROOT@@/$WEB_ROOT/g" $CONFIG
+$SED -i "s/@@ADMIN@@/$ADMIN/g" $CONFIG
 
 chmod 600 $CONFIG
 
@@ -65,6 +67,7 @@ if [ ! -d "/var/www/html/$DOMAIN/$ENVIRONMENT" ]; then
     chmod 770 /var/www/html/$DOMAIN/$ENVIRONMENT/_logs
     chmod 755 /var/www/html/$DOMAIN/$ENVIRONMENT/$WEB_ROOT
     chmod g+ws /var/www/html/$DOMAIN/$ENVIRONMENT/$WEB_ROOT
+    chown www:develop /var/www/html/$DOMAIN/$ENVIRONMENT/$WEB_ROOT
     chown root:develop /var/www/html/$DOMAIN/$ENVIRONMENT/ -R
 fi
 

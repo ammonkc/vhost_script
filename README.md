@@ -13,6 +13,6 @@ vhost directory structure: `/etc/httpd/conf/vhosts/{available,enabled,template}`
 
 ## Usage
 
-* `create_vhost domain.com`
+* `create_vhost <domain.com>`
 * It will ask for the environment and web root folder name
 
